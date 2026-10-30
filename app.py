@@ -3,7 +3,7 @@ import pandas as pd
 
 # 1. Беттің баптаулары
 st.set_page_config(
-    page_title="UstazMentor - 6-сынып | Level-Up Edition", 
+    page_title="UstazMentor - 6-сынып | Modern Glassmorphism Edition", 
     page_icon="💻", 
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -13,97 +13,107 @@ st.set_page_config(
 if "results_db" not in st.session_state:
     st.session_state.results_db = []
 
-# 2. DUOLINGO + CANVA PREMIUM СТИЛІНДЕГІ СТИЛЬДЕР (CSS)
+# 2. MODERN GLASSMORPHISM ПРЕМИУМ СТИЛЬДЕРІ (CSS)
 st.markdown(
     """
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
     html, body, [data-testid="stAppViewContainer"] {
-        background: #f7f9fc !important;
-        font-family: 'Nunito', sans-serif !important;
-        color: #3c4257 !important;
+        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311045 100%) !important;
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
+        color: #f1f5f9 !important;
     }
 
     [data-testid="stHeader"], [data-testid="stSidebar"] {
         display: none !important;
     }
 
-    /* Hero Banner Level-up стилінде */
+    /* SaaS Hero Banner Glassmorphism стилінде */
     .main-header {
-        background: linear-gradient(135deg, #1cb0f6 0%, #58cc02 100%);
+        background: rgba(30, 41, 59, 0.7) !important;
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
         padding: 35px;
-        border-radius: 28px;
+        border-radius: 24px;
         color: white;
         text-align: center;
-        box-shadow: 0 10px 0 #1899d6, 0 20px 30px rgba(28, 176, 246, 0.25);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
         margin-bottom: 25px;
-        border: 4px solid #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.12);
     }
     .main-header h1 {
-        font-size: 2.8rem;
-        font-weight: 900;
-        margin-bottom: 5px;
-        text-shadow: 0 3px 0 rgba(0,0,0,0.15);
-    }
-
-    /* Ойын карточкасы мен Сценарий боксы */
-    .scenario-box {
-        background-color: #ffffff !important;
-        border: 3px solid #1cb0f6 !important;
-        border-radius: 24px !important;
-        padding: 20px !important;
-        box-shadow: 0 8px 0 #e5e7eb !important;
-        margin-bottom: 20px !important;
-    }
-
-    /* Level-up статистика бейдждері */
-    .stat-badge {
-        background: #fff9e6;
-        border: 2px solid #ffc800;
-        border-radius: 18px;
-        padding: 12px;
-        text-align: center;
+        font-size: 2.7rem;
         font-weight: 800;
-        color: #b28200;
-        box-shadow: 0 4px 0 #e6b400;
+        background: linear-gradient(90deg, #38bdf8 0%, #a855f7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 8px;
+    }
+
+    /* Ойын карточкасы мен Сценарий боксы (Glass Card) */
+    .scenario-box {
+        background: rgba(30, 41, 59, 0.6) !important;
+        backdrop-filter: blur(12px) !important;
+        border: 1px solid rgba(56, 189, 248, 0.3) !important;
+        border-radius: 20px !important;
+        padding: 22px !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+        margin-bottom: 20px !important;
+        color: #e2e8f0 !important;
+    }
+
+    /* Статистика бейдждері */
+    .stat-badge {
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(234, 179, 8, 0.4);
+        border-radius: 16px;
+        padding: 14px;
+        text-align: center;
+        font-weight: 700;
+        color: #facc15;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
         margin-bottom: 15px;
     }
 
-    /* 3D Тактильді батырмалар */
+    /* Премиум SaaS Батырмалары */
     .stButton > button, div[data-testid="stFormSubmitButton"] > button {
-        background-color: #58cc02 !important;
+        background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%) !important;
         color: #ffffff !important;
-        font-weight: 800 !important;
-        font-size: 1.15rem !important;
-        border: none !important;
-        border-radius: 18px !important;
-        padding: 0.85rem 2rem !important;
-        box-shadow: 0 6px 0 #46a302 !important;
-        transition: all 0.1s ease !important;
+        font-weight: 700 !important;
+        font-size: 1.05rem !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border-radius: 14px !important;
+        padding: 0.75rem 2rem !important;
+        box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
         width: 100%;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
     }
     .stButton > button:hover, div[data-testid="stFormSubmitButton"] > button:hover {
-        background-color: #61d803 !important;
+        background: linear-gradient(135deg, #2563eb 100%, #7c3aed 100%) !important;
         transform: translateY(-2px);
-    }
-    .stButton > button:active, div[data-testid="stFormSubmitButton"] > button:active {
-        transform: translateY(4px) !important;
-        box-shadow: 0 2px 0 #46a302 !important;
+        box-shadow: 0 15px 30px rgba(139, 92, 246, 0.5) !important;
     }
 
     /* Енгізу өрістері мен Selectbox */
     .stTextInput > div > div > input,
     .stSelectbox > div > div > div,
     .stNumberInput > div > div > input {
-        background: #ffffff !important;
-        border: 3px solid #e5e7eb !important;
-        border-radius: 16px !important;
-        color: #3c4257 !important;
-        font-weight: 700 !important;
+        background: rgba(15, 23, 42, 0.6) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 14px !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
         padding: 10px 15px !important;
+    }
+
+    /* DataFrame & Tables */
+    [data-testid="stDataFrame"] {
+        background: rgba(30, 41, 59, 0.5);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 10px;
     }
     </style>
     """,
@@ -115,8 +125,8 @@ st.markdown(
     """
     <div class="main-header">
         <h1>UstazMentor 💻 6-сынып</h1>
-        <p style="font-size: 18px; font-weight: 700; margin-top: 5px;">⭐ Бір тақырып — бір өмірлік жағдаят — нақты нәтиже!</p>
-        <p style="font-size: 14px; opacity: 0.95;">Интерактивті Дебаггер, Drag & Drop Конструктор және Функционалдық тесттер</p>
+        <p style="font-size: 17px; font-weight: 600; color: #38bdf8; margin-top: 5px;">⭐ Бір тақырып — бір өмірлік жағдаят — нақты нәтиже!</p>
+        <p style="font-size: 13px; color: #94a3b8; margin-top: 5px;">Modern Glassmorphism • Интерактивті Дебаггер • SaaS Мониторинг</p>
     </div>
     """,
     unsafe_allow_html=True,
@@ -208,14 +218,14 @@ if role == "👩‍🏫 Мұғалім кабинеті (SaaS Dashboard)":
 # 👨‍🎓 ОҚУШЫ РЕЖИМІ (Game Hub)
 # ==========================================
 else:
-    # Level-Up Статистика бейдждері
+    # Статистика бейдждері
     col_stat1, col_stat2, col_stat3 = st.columns(3)
     with col_stat1:
-        st.markdown('<div class="stat-badge">🥉 Бронза деңгейі<br><span style="font-size:0.85rem;">Бастаушы Кодшы</span></div>', unsafe_allow_html=True)
+        st.markdown('<div class="stat-badge">🥉 Бронза деңгейі<br><span style="font-size:0.8rem; color:#94a3b8;">Бастаушы Кодшы</span></div>', unsafe_allow_html=True)
     with col_stat2:
-        st.markdown('<div class="stat-badge">🥈 Күміс деңгейі<br><span style="font-size:0.85rem;">Жетілдіруші Хакер</span></div>', unsafe_allow_html=True)
+        st.markdown('<div class="stat-badge">🥈 Күміс деңгейі<br><span style="font-size:0.8rem; color:#94a3b8;">Жетілдіруші Хакер</span></div>', unsafe_allow_html=True)
     with col_stat3:
-        st.markdown('<div class="stat-badge">🥇 Алтын деңгей<br><span style="font-size:0.85rem;">IT Магистрі</span></div>', unsafe_allow_html=True)
+        st.markdown('<div class="stat-badge">🥇 Алтын деңгей<br><span style="font-size:0.8rem; color:#94a3b8;">IT Магистрі</span></div>', unsafe_allow_html=True)
 
     st.subheader("👨‍🎓 Оқушы кабинеті")
     col_name, col_class = st.columns([2, 1])
@@ -586,7 +596,7 @@ else:
         st.markdown("""
             <div class="scenario-box">
                 <b>🎨 Мини-ойын: «Дизайнер Айдынның қатесін түзет!»</b><br>
-                «Айдын vektorлық редакторда «Эко-үй» салып жатып, қабаттардың ретін шатастырып жіберді. 
+                «Айдын векторлық редакторда «Эко-үй» салып жатып, қабаттардың ретін шатастырып жіберді. 
                 Нәтижесінде үйдің шатыры қабырғаны жауып, ал терезелер мүлде көрінбей қалды! 
                 Суретті қайтадан дұрыс шығару үшін элементтерді <b>ең астыңғы қабаттан (1) ең үстіңгі қабатқа (5) қарай</b> дұрыс ретпен орналастырып, Айдынға көмектес!»
             </div>
