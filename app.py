@@ -1,9 +1,10 @@
 import streamlit as st
 import pandas as pd
+import os
 
 # 1. Беттің баптаулары
 st.set_page_config(
-    page_title="UstazMentor - 6-сынып | Modern Glassmorphism Edition", 
+    page_title="UstazMentor - 6-сынып | Futuristic AI & Static", 
     page_icon="💻", 
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -13,120 +14,68 @@ st.set_page_config(
 if "results_db" not in st.session_state:
     st.session_state.results_db = []
 
-# 2. MODERN GLASSMORPHISM ПРЕМИУМ СТИЛЬДЕРІ (CSS)
-st.markdown(
-    """
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+# 2. СТАТИКАЛЫҚ ФАЙЛДАРДЫ ОҚУ (static/style.css және static/animation.js)
+def load_static_assets():
+    css_file = "static/style.css"
+    js_file = "static/animation.js"
+    
+    # style.css файлды жүктеу
+    if os.path.exists(css_file):
+        with open(css_file, "r", encoding="utf-8") as f:
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    else:
+        st.markdown("""
+            <style>
+            @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap');
+            html, body, [data-testid="stAppViewContainer"] {
+                background: radial-gradient(circle at 50% 10%, #0f172a 0%, #090d16 70%, #05070a 100%) !important;
+                font-family: 'Inter', sans-serif !important;
+                color: #e2e8f0 !important;
+            }
+            [data-testid="stHeader"], [data-testid="stSidebar"] { display: none !important; }
+            .main-header {
+                background: rgba(15, 23, 42, 0.8) !important;
+                backdrop-filter: blur(20px) !important;
+                padding: 35px; border-radius: 20px; color: white; text-align: center;
+                border: 1px solid rgba(0, 242, 254, 0.3); margin-bottom: 25px;
+            }
+            .main-header h1 {
+                font-family: 'Orbitron', sans-serif; font-size: 2.6rem; font-weight: 900;
+                background: linear-gradient(90deg, #00f2fe 0%, #7f00ff 100%);
+                -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            }
+            .scenario-box {
+                background: rgba(15, 23, 42, 0.75) !important;
+                border: 1px solid rgba(0, 242, 254, 0.25) !important;
+                border-radius: 16px !important; padding: 22px !important; margin-bottom: 20px !important;
+            }
+            .stat-badge {
+                background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(127, 0, 255, 0.5);
+                border-radius: 14px; padding: 14px; text-align: center; font-weight: 700; color: #00f2fe;
+            }
+            .stButton > button, div[data-testid="stFormSubmitButton"] > button {
+                background: linear-gradient(135deg, #00f2fe 0%, #7f00ff 100%) !important;
+                color: #ffffff !important; font-family: 'Orbitron', sans-serif !important;
+                font-weight: 700 !important; border-radius: 12px !important; width: 100%;
+            }
+            </style>
+        """, unsafe_allow_html=True)
 
-    html, body, [data-testid="stAppViewContainer"] {
-        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311045 100%) !important;
-        font-family: 'Plus Jakarta Sans', sans-serif !important;
-        color: #f1f5f9 !important;
-    }
+    # animation.js файлды жүктеу
+    if os.path.exists(js_file):
+        with open(js_file, "r", encoding="utf-8") as f:
+            js_code = f.read()
+            st.markdown(f"<script>{js_code}</script>", unsafe_allow_html=True)
 
-    [data-testid="stHeader"], [data-testid="stSidebar"] {
-        display: none !important;
-    }
-
-    /* SaaS Hero Banner Glassmorphism стилінде */
-    .main-header {
-        background: rgba(30, 41, 59, 0.7) !important;
-        backdrop-filter: blur(16px) !important;
-        -webkit-backdrop-filter: blur(16px) !important;
-        padding: 35px;
-        border-radius: 24px;
-        color: white;
-        text-align: center;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        margin-bottom: 25px;
-        border: 1px solid rgba(255, 255, 255, 0.12);
-    }
-    .main-header h1 {
-        font-size: 2.7rem;
-        font-weight: 800;
-        background: linear-gradient(90deg, #38bdf8 0%, #a855f7 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 8px;
-    }
-
-    /* Ойын карточкасы мен Сценарий боксы (Glass Card) */
-    .scenario-box {
-        background: rgba(30, 41, 59, 0.6) !important;
-        backdrop-filter: blur(12px) !important;
-        border: 1px solid rgba(56, 189, 248, 0.3) !important;
-        border-radius: 20px !important;
-        padding: 22px !important;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
-        margin-bottom: 20px !important;
-        color: #e2e8f0 !important;
-    }
-
-    /* Статистика бейдждері */
-    .stat-badge {
-        background: rgba(15, 23, 42, 0.7);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(234, 179, 8, 0.4);
-        border-radius: 16px;
-        padding: 14px;
-        text-align: center;
-        font-weight: 700;
-        color: #facc15;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-        margin-bottom: 15px;
-    }
-
-    /* Премиум SaaS Батырмалары */
-    .stButton > button, div[data-testid="stFormSubmitButton"] > button {
-        background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%) !important;
-        color: #ffffff !important;
-        font-weight: 700 !important;
-        font-size: 1.05rem !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        border-radius: 14px !important;
-        padding: 0.75rem 2rem !important;
-        box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4) !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        width: 100%;
-    }
-    .stButton > button:hover, div[data-testid="stFormSubmitButton"] > button:hover {
-        background: linear-gradient(135deg, #2563eb 100%, #7c3aed 100%) !important;
-        transform: translateY(-2px);
-        box-shadow: 0 15px 30px rgba(139, 92, 246, 0.5) !important;
-    }
-
-    /* Енгізу өрістері мен Selectbox */
-    .stTextInput > div > div > input,
-    .stSelectbox > div > div > div,
-    .stNumberInput > div > div > input {
-        background: rgba(15, 23, 42, 0.6) !important;
-        border: 1px solid rgba(255, 255, 255, 0.15) !important;
-        border-radius: 14px !important;
-        color: #ffffff !important;
-        font-weight: 600 !important;
-        padding: 10px 15px !important;
-    }
-
-    /* DataFrame & Tables */
-    [data-testid="stDataFrame"] {
-        background: rgba(30, 41, 59, 0.5);
-        border-radius: 16px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        padding: 10px;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+load_static_assets()
 
 # Басты декоративті Hero Section
 st.markdown(
     """
     <div class="main-header">
         <h1>UstazMentor 💻 6-сынып</h1>
-        <p style="font-size: 17px; font-weight: 600; color: #38bdf8; margin-top: 5px;">⭐ Бір тақырып — бір өмірлік жағдаят — нақты нәтиже!</p>
-        <p style="font-size: 13px; color: #94a3b8; margin-top: 5px;">Modern Glassmorphism • Интерактивті Дебаггер • SaaS Мониторинг</p>
+        <p style="font-size: 16px; font-weight: 600; color: #00f2fe; margin-top: 5px;">⚡ Бір тақырып — бір өмірлік жағдаят — нақты нәтиже!</p>
+        <p style="font-size: 12px; color: #94a3b8; margin-top: 5px; font-family: 'Orbitron', sans-serif;">FULL 11 TOPICS • FUTURISTIC NEON UI</p>
     </div>
     """,
     unsafe_allow_html=True,
@@ -221,11 +170,11 @@ else:
     # Статистика бейдждері
     col_stat1, col_stat2, col_stat3 = st.columns(3)
     with col_stat1:
-        st.markdown('<div class="stat-badge">🥉 Бронза деңгейі<br><span style="font-size:0.8rem; color:#94a3b8;">Бастаушы Кодшы</span></div>', unsafe_allow_html=True)
+        st.markdown('<div class="stat-badge">🥉 Бронза деңгейі<br><span style="font-size:0.75rem; color:#94a3b8;">Бастаушы Кодшы</span></div>', unsafe_allow_html=True)
     with col_stat2:
-        st.markdown('<div class="stat-badge">🥈 Күміс деңгейі<br><span style="font-size:0.8rem; color:#94a3b8;">Жетілдіруші Хакер</span></div>', unsafe_allow_html=True)
+        st.markdown('<div class="stat-badge">🥈 Күміс деңгейі<br><span style="font-size:0.75rem; color:#94a3b8;">Жетілдіруші Хакер</span></div>', unsafe_allow_html=True)
     with col_stat3:
-        st.markdown('<div class="stat-badge">🥇 Алтын деңгей<br><span style="font-size:0.8rem; color:#94a3b8;">IT Магистрі</span></div>', unsafe_allow_html=True)
+        st.markdown('<div class="stat-badge">🥇 Алтын деңгей<br><span style="font-size:0.75rem; color:#94a3b8;">IT Магистрі</span></div>', unsafe_allow_html=True)
 
     st.subheader("👨‍🎓 Оқушы кабинеті")
     col_name, col_class = st.columns([2, 1])
@@ -287,7 +236,7 @@ else:
                 ],
             )
 
-            if st.form_submit_button("Дебаггерді тексеру 🚀"):
+            if st.form_submit_button("Дебаггерді тексеру ⚡"):
                 if not student_name.strip():
                     st.error("⚠️ Аты-жөніңізді енгізіңіз!")
                 else:
@@ -320,7 +269,7 @@ else:
     elif "2. Қауіпсіздік" in selected_topic and "Мини-ойын" in selected_topic:
         st.markdown("#### 🎮 Практикалық тапсырма (Интерактивті мини-ойын)")
         st.info("Бұл тапсырма сыртқы интерактивті платформа арқылы орындалады.")
-        st.link_button("Ойынды ашу 🚀", "https://aliyateacher80-design.github.io/vektor-game-6/")
+        st.link_button("Ойынды ашу ⚡", "https://aliyateacher80-design.github.io/vektor-game-6/")
 
     # --- 3. ЖАСАНДЫ ИНТЕЛЛЕКТ ДЕРЕКТЕРІ (ТЕСТ) ---
     elif "3. Жасанды интеллектідегі деректердің рөлі" in selected_topic:
@@ -377,7 +326,7 @@ else:
                 ["А) Дұрыс таңдалған сапалы деректер жиынтығы", "Б) Монитордың үлкендігіне", "С) Пернетақта түсіне", "Д) Бөлме жарығына"],
             )
 
-            if st.form_submit_button("Тестті тексеру 🚀"):
+            if st.form_submit_button("Тестті тексеру ⚡"):
                 if not student_name.strip():
                     st.error("⚠️ Аты-жөніңізді енгізіңіз!")
                 else:
@@ -418,7 +367,7 @@ else:
             d3 = st.text_input("3. Тоқ өшсе де сақталатын тұрақты жады?")
             d4 = st.text_input("4. Процессор жылдамдығының өлшем бірлігі?")
 
-            if st.form_submit_button("Дебаггерді тексеру 🚀"):
+            if st.form_submit_button("Дебаггерді тексеру ⚡"):
                 if not student_name.strip():
                     st.error("⚠️ Аты-жөніңізді енгізіңіз!")
                 else:
@@ -445,7 +394,7 @@ else:
             m4 = st.selectbox("4. Кэш-жады", ["-- Таңдаңыз --", "В) Процессор мен жедел жады арасындағы мәлімет алмасуды жылдамдататын өте жылдам жады.", "Д) Жылу"])
             m5 = st.selectbox("5. Тактілік жиілік", ["-- Таңдаңыз --", "Д) Процессордың 1 секундта қанша операция жасай алатынын көрсететін сипаттамасы.", "Г) Миы"])
 
-            if st.form_submit_button("Сәйкестікті тексеру 🚀"):
+            if st.form_submit_button("Сәйкестікті тексеру ⚡"):
                 if not student_name.strip():
                     st.error("⚠️ Аты-жөніңізді енгізіңіз!")
                 else:
@@ -476,7 +425,7 @@ else:
             st.write("**Файл атын қою ережесі кейсі:**")
             naming_case = st.radio("Қай файл аты дұрыс жазылған?", ["Менің үй тапсырмам.docx", "Tabys_2026.xlsx", "esep*.txt"])
 
-            if st.form_submit_button("Конструкторды тексеру 🚀"):
+            if st.form_submit_button("Конструкторды тексеру ⚡"):
                 if not student_name.strip():
                     st.error("⚠️ Аты-жөніңізді енгізіңіз!")
                 else:
@@ -499,7 +448,7 @@ else:
     elif "7. Файлдық жүйе" in selected_topic:
         st.markdown("#### 🎮 Практикалық тапсырма (Интерактивті ойын)")
         st.info("Бұл сабақ сыртқы платформадағы ойын арқылы орындалады.")
-        st.link_button("Ойынды ашу 🚀", "https://aliyateacher80-design.github.io/game-6-klass/")
+        st.link_button("Ойынды ашу ⚡", "https://aliyateacher80-design.github.io/game-6-klass/")
 
     # --- 8. ВЕКТОРЛЫҚ ГРАФИКА КОНСТРУКТОРЫ ---
     elif "8. Векторлық графикалық редактор" in selected_topic:
@@ -510,7 +459,7 @@ else:
             g3 = st.radio("3. «Негізі математикалық формулалар мен геометриялық пішіндерге негізделген»", ["-- Таңдаңыз --", "Растрлық графика", "Векторлық графика"])
             g4 = st.radio("4. «Файл көлемі өте кішкентай, жеңіл болады (SVG, CorelDRAW)»", ["-- Таңдаңыз --", "Растрлық графика", "Векторлық графика"])
 
-            if st.form_submit_button("Графиканы ажыратуды тексеру 🚀"):
+            if st.form_submit_button("Графиканы ажыратуды тексеру ⚡"):
                 if not student_name.strip():
                     st.error("⚠️ Аты-жөніңізді енгізіңіз!")
                 else:
@@ -541,7 +490,7 @@ else:
             t9 = st.radio("9. Векторлық графикалық редакторға жататын программа:", ["А) Adobe Photoshop", "В) CorelDRAW немесе Adobe Illustrator", "С) Paint", "D) Microsoft Photos"])
             t10 = st.radio("10. Векторлық суреттердің файл көлемі әдетте қандай болады?", ["А) Өте үлкен", "В) Әлдеқайда кіші әрі жеңіл", "С) Бірдей", "D) Өзгереді"])
 
-            if st.form_submit_button("Тестті тексеру 🚀"):
+            if st.form_submit_button("Тестті тексеру ⚡"):
                 if not student_name.strip():
                     st.error("⚠️ Аты-жөніңізді енгізіңіз!")
                 else:
@@ -574,7 +523,7 @@ else:
             u4 = st.selectbox("4. Text tool (Мәтін құралы)", ["-- Таңдаңыз --", "Г) Әр түрлі қаріптермен атаулар, тақырыптар енгізу.", "Д) Нобай"])
             u5 = st.selectbox("5. Contour / Контур", ["-- Таңдаңыз --", "Д) Векторлық объектінің сыртқы шекарасы немесе сызық нобайы.", "Г) Мәтін"])
 
-            if st.form_submit_button("Сәйкестікті тексеру 🚀"):
+            if st.form_submit_button("Сәйкестікті тексеру ⚡"):
                 if not student_name.strip():
                     st.error("⚠️ Аты-жөніңізді енгізіңіз!")
                 else:
