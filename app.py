@@ -1,63 +1,143 @@
 import streamlit as st
 import pandas as pd
 
+# 1. Беттің баптаулары
 st.set_page_config(
-    page_title="UstazMentor - 6-сынып", page_icon="💻", layout="wide"
+    page_title="UstazMentor - 6-сынып | Level-Up Edition", 
+    page_icon="💻", 
+    layout="wide",
+    initial_sidebar_state="collapsed"
 )
 
+# Дерекқор сессиясын бастау
 if "results_db" not in st.session_state:
     st.session_state.results_db = []
 
+# 2. DUOLINGO + CANVA PREMIUM СТИЛІНДЕГІ СТИЛЬДЕР (CSS)
 st.markdown(
     """
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+    html, body, [data-testid="stAppViewContainer"] {
+        background: #f7f9fc !important;
+        font-family: 'Nunito', sans-serif !important;
+        color: #3c4257 !important;
+    }
+
+    [data-testid="stHeader"], [data-testid="stSidebar"] {
+        display: none !important;
+    }
+
+    /* Hero Banner Level-up стилінде */
     .main-header {
-        background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 100%);
-        padding: 25px;
-        border-radius: 12px;
+        background: linear-gradient(135deg, #1cb0f6 0%, #58cc02 100%);
+        padding: 35px;
+        border-radius: 28px;
         color: white;
         text-align: center;
-        margin-bottom: 20px;
+        box-shadow: 0 10px 0 #1899d6, 0 20px 30px rgba(28, 176, 246, 0.25);
+        margin-bottom: 25px;
+        border: 4px solid #ffffff;
     }
+    .main-header h1 {
+        font-size: 2.8rem;
+        font-weight: 900;
+        margin-bottom: 5px;
+        text-shadow: 0 3px 0 rgba(0,0,0,0.15);
+    }
+
+    /* Ойын карточкасы мен Сценарий боксы */
     .scenario-box {
-        background-color: #f0f9ff;
-        border-left: 5px solid #0284c7;
-        padding: 15px;
-        border-radius: 8px;
+        background-color: #ffffff !important;
+        border: 3px solid #1cb0f6 !important;
+        border-radius: 24px !important;
+        padding: 20px !important;
+        box-shadow: 0 8px 0 #e5e7eb !important;
+        margin-bottom: 20px !important;
+    }
+
+    /* Level-up статистика бейдждері */
+    .stat-badge {
+        background: #fff9e6;
+        border: 2px solid #ffc800;
+        border-radius: 18px;
+        padding: 12px;
+        text-align: center;
+        font-weight: 800;
+        color: #b28200;
+        box-shadow: 0 4px 0 #e6b400;
         margin-bottom: 15px;
     }
+
+    /* 3D Тактильді батырмалар */
+    .stButton > button, div[data-testid="stFormSubmitButton"] > button {
+        background-color: #58cc02 !important;
+        color: #ffffff !important;
+        font-weight: 800 !important;
+        font-size: 1.15rem !important;
+        border: none !important;
+        border-radius: 18px !important;
+        padding: 0.85rem 2rem !important;
+        box-shadow: 0 6px 0 #46a302 !important;
+        transition: all 0.1s ease !important;
+        width: 100%;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .stButton > button:hover, div[data-testid="stFormSubmitButton"] > button:hover {
+        background-color: #61d803 !important;
+        transform: translateY(-2px);
+    }
+    .stButton > button:active, div[data-testid="stFormSubmitButton"] > button:active {
+        transform: translateY(4px) !important;
+        box-shadow: 0 2px 0 #46a302 !important;
+    }
+
+    /* Енгізу өрістері мен Selectbox */
+    .stTextInput > div > div > input,
+    .stSelectbox > div > div > div,
+    .stNumberInput > div > div > input {
+        background: #ffffff !important;
+        border: 3px solid #e5e7eb !important;
+        border-radius: 16px !important;
+        color: #3c4257 !important;
+        font-weight: 700 !important;
+        padding: 10px 15px !important;
+    }
     </style>
-""",
+    """,
     unsafe_allow_html=True,
 )
 
+# Басты декоративті Hero Section
 st.markdown(
     """
     <div class="main-header">
         <h1>UstazMentor 💻 6-сынып</h1>
-        <p style="font-size: 18px; font-weight: 600; margin-top: 5px;">Бір тақырып — бір өмірлік жағдаят — нақты нәтиже!</p>
-        <p style="font-size: 14px; opacity: 0.9;">Интерактивті Дебаггер, Drag & Drop Конструктор және Функционалдық тесттер</p>
+        <p style="font-size: 18px; font-weight: 700; margin-top: 5px;">⭐ Бір тақырып — бір өмірлік жағдаят — нақты нәтиже!</p>
+        <p style="font-size: 14px; opacity: 0.95;">Интерактивті Дебаггер, Drag & Drop Конструктор және Функционалдық тесттер</p>
     </div>
-""",
+    """,
     unsafe_allow_html=True,
 )
 
-# 1-ден бастап реттелген тақырыптар тізімі (2, 7, 11 бос)
+# Тақырыптар тізімі
 sections_dict = {
     "📁 Бөлім: Компьютерлік жүйелер және қауіпсіздік": [
         "1. Қауіпсіздік және Интернет желісінде жұмыс кезіндегі жауапкершілік — 🕵️‍♂️ Дебаггер",
-        "2. Қауіпсіздік және Интернет желісінде жұмыс кезіндегі жауапкершілік (Практикалық жұмыс)",
+        "2. Қауіпсіздік және Интернет желісінде жұмыс кезіндегі жауапкершілік (Практикалық жұмыс) — 🎮 Мини-ойын",
         "3. Жасанды интеллектідегі деректердің рөлі — 📝 Тест",
         "4. Жүйелік блок құрылғысы және компьютердің жадысы — 🕵️‍♂️ Дебаггер",
         "5. Жүйелік блок құрылғысы және компьютердің жадысы (Практикалық жұмыс) — 🔗 Сәйкестендіру",
         "6. Файлдық жүйе және программалық жасақтама — 🧩 Виртуалды конструктор (Файлдарды сұрыптау)",
-        "7. Файлдық жүйе және программалық жасақтама (Практикалық жұмыс)",
+        "7. Файлдық жүйе және программалық жасақтама (Практикалық жұмыс) — 🎮 Ойын",
     ],
     "📁 Бөлім: Векторлық және растрлық графика": [
         "8. Векторлық графикалық редактор — 🧩 Виртуалды конструктор (Графиканы ажырату)",
-        "9. Векторлық графикалық редактор (Бекіту және қолдану)",
+        "9. Векторлық графикалық редактор (Бекіту және қолдану) — 📝 Тест",
         "10. Векторлық кескіндерді құру (Практикалық жұмыс) — 🔗 Сәйкестендіру (Құралдар)",
-        "11. Векторлық кескіндерді құру (Бекіту және қолдану)",
+        "11. Векторлық кескіндерді құру (Бекіту және қолдану) — 🎨 Қабаттар құпиясы",
     ],
 }
 
@@ -65,12 +145,16 @@ all_topics = []
 for sec, topics in sections_dict.items():
     all_topics.extend(topics)
 
+# Навигация батырмасы
 role = st.radio(
-    "Режимді таңдаңыз:", ["👨‍🎓 Оқушы режимі", "👩‍🏫 Мұғалім кабинеті"], horizontal=True
+    "🎯 Платформа режимін таңдаңыз:", ["👨‍🎓 Оқушы режимі (Game Hub)", "👩‍🏫 Мұғалім кабинеті (SaaS Dashboard)"], horizontal=True
 )
 st.divider()
 
-if role == "👩‍🏫 Мұғалім кабинеті":
+# ==========================================
+# 👩‍🏫 МҰҒАЛІМ КАБИНЕТІ (SaaS Dashboard)
+# ==========================================
+if role == "👩‍🏫 Мұғалім кабинеті (SaaS Dashboard)":
     st.subheader("👨‍💻 Мұғалімнің басқару және мониторинг панелі 🔗")
     
     col_m1, col_m2 = st.columns(2)
@@ -118,9 +202,21 @@ if role == "👩‍🏫 Мұғалім кабинеті":
             st.session_state.results_db = []
             st.rerun()
     else:
-        st.write("Әзірге сақталған нәтижелер тізімі бос. Оқушылар тапсырма орындап жіберген соң осында кесте түрінде шығады.")
+        st.info("ℹ️ Әзірге сақталған нәтижелер тізімі бос. Оқушылар тапсырма орындап жіберген соң осында кесте түрінде шығады.")
 
+# ==========================================
+# 👨‍🎓 ОҚУШЫ РЕЖИМІ (Game Hub)
+# ==========================================
 else:
+    # Level-Up Статистика бейдждері
+    col_stat1, col_stat2, col_stat3 = st.columns(3)
+    with col_stat1:
+        st.markdown('<div class="stat-badge">🥉 Бронза деңгейі<br><span style="font-size:0.85rem;">Бастаушы Кодшы</span></div>', unsafe_allow_html=True)
+    with col_stat2:
+        st.markdown('<div class="stat-badge">🥈 Күміс деңгейі<br><span style="font-size:0.85rem;">Жетілдіруші Хакер</span></div>', unsafe_allow_html=True)
+    with col_stat3:
+        st.markdown('<div class="stat-badge">🥇 Алтын деңгей<br><span style="font-size:0.85rem;">IT Магистрі</span></div>', unsafe_allow_html=True)
+
     st.subheader("👨‍🎓 Оқушы кабинеті")
     col_name, col_class = st.columns([2, 1])
     with col_name:
@@ -181,7 +277,7 @@ else:
                 ],
             )
 
-            if st.form_submit_button("Дебаггерді тексеру"):
+            if st.form_submit_button("Дебаггерді тексеру 🚀"):
                 if not student_name.strip():
                     st.error("⚠️ Аты-жөніңізді енгізіңіз!")
                 else:
@@ -200,7 +296,7 @@ else:
                         c = 2
                     st.balloons()
                     st.success(
-                        f"Құттықтаймыз, {student_name}! Табылған қателер саны: {c} / 3"
+                        f"🎉 Құттықтаймыз, {student_name}! Табылған қателер саны: {c} / 3"
                     )
                     st.session_state.results_db.append({
                         "name": student_name,
@@ -209,6 +305,12 @@ else:
                         "task_type": "Дебаггер (Қауіпсіздік)",
                         "score": f"{c} / 3 қате",
                     })
+
+    # --- 2. ПРАКТИКАЛЫҚ ЖҰМЫС (Векторлық ойын сілтемесі) ---
+    elif "2. Қауіпсіздік" in selected_topic and "Мини-ойын" in selected_topic:
+        st.markdown("#### 🎮 Практикалық тапсырма (Интерактивті мини-ойын)")
+        st.info("Бұл тапсырма сыртқы интерактивті платформа арқылы орындалады.")
+        st.link_button("Ойынды ашу 🚀", "https://aliyateacher80-design.github.io/vektor-game-6/")
 
     # --- 3. ЖАСАНДЫ ИНТЕЛЛЕКТ ДЕРЕКТЕРІ (ТЕСТ) ---
     elif "3. Жасанды интеллектідегі деректердің рөлі" in selected_topic:
@@ -265,7 +367,7 @@ else:
                 ["А) Дұрыс таңдалған сапалы деректер жиынтығы", "Б) Монитордың үлкендігіне", "С) Пернетақта түсіне", "Д) Бөлме жарығына"],
             )
 
-            if st.form_submit_button("Тестті тексеру"):
+            if st.form_submit_button("Тестті тексеру 🚀"):
                 if not student_name.strip():
                     st.error("⚠️ Аты-жөніңізді енгізіңіз!")
                 else:
@@ -282,7 +384,7 @@ else:
                     if "А) Дұрыс таңдалған сапалы" in q10: score += 1
 
                     st.balloons()
-                    st.success(f"Нәтижеңіз, {student_name}: **{score} / 10** ұпай 🌟")
+                    st.success(f"🎉 Нәтижеңіз, {student_name}: **{score} / 10** ұпай 🌟")
                     st.session_state.results_db.append({
                         "name": student_name, "grade": student_grade, "topic": selected_topic,
                         "task_type": "Тест (ЖИ деректері)", "score": f"{score} / 10"
@@ -306,7 +408,7 @@ else:
             d3 = st.text_input("3. Тоқ өшсе де сақталатын тұрақты жады?")
             d4 = st.text_input("4. Процессор жылдамдығының өлшем бірлігі?")
 
-            if st.form_submit_button("Дебаггерді тексеру"):
+            if st.form_submit_button("Дебаггерді тексеру 🚀"):
                 if not student_name.strip():
                     st.error("⚠️ Аты-жөніңізді енгізіңіз!")
                 else:
@@ -317,7 +419,7 @@ else:
                     if "гц" in d4.lower() or "жиілік" in d4.lower(): c += 1
 
                     st.balloons()
-                    st.success(f"Жарайсың, {student_name}! Табылған дұрыс түзетулер: {c} / 4")
+                    st.success(f"🎉 Жарайсың, {student_name}! Табылған дұрыс түзетулер: {c} / 4")
                     st.session_state.results_db.append({
                         "name": student_name, "grade": student_grade, "topic": selected_topic,
                         "task_type": "Дебаггер (Аппараттық)", "score": f"{c} / 4 қате түзелді"
@@ -333,7 +435,7 @@ else:
             m4 = st.selectbox("4. Кэш-жады", ["-- Таңдаңыз --", "В) Процессор мен жедел жады арасындағы мәлімет алмасуды жылдамдататын өте жылдам жады.", "Д) Жылу"])
             m5 = st.selectbox("5. Тактілік жиілік", ["-- Таңдаңыз --", "Д) Процессордың 1 секундта қанша операция жасай алатынын көрсететін сипаттамасы.", "Г) Миы"])
 
-            if st.form_submit_button("Сәйкестікті тексеру"):
+            if st.form_submit_button("Сәйкестікті тексеру 🚀"):
                 if not student_name.strip():
                     st.error("⚠️ Аты-жөніңізді енгізіңіз!")
                 else:
@@ -344,7 +446,7 @@ else:
                     if "В)" in m4: sc += 1
                     if "Д)" in m5: sc += 1
                     st.balloons()
-                    st.success(f"Нәтижеңіз: **{sc} / 5** дұрыс сәйкестік 🎯")
+                    st.success(f"🎉 Нәтижеңіз: **{sc} / 5** дұрыс сәйкестік 🎯")
                     st.session_state.results_db.append({
                         "name": student_name, "grade": student_grade, "topic": selected_topic,
                         "task_type": "Сәйкестендіру (Аппараттық)", "score": f"{sc} / 5"
@@ -364,7 +466,7 @@ else:
             st.write("**Файл атын қою ережесі кейсі:**")
             naming_case = st.radio("Қай файл аты дұрыс жазылған?", ["Менің үй тапсырмам.docx", "Tabys_2026.xlsx", "esep*.txt"])
 
-            if st.form_submit_button("Конструкторды тексеру"):
+            if st.form_submit_button("Конструкторды тексеру 🚀"):
                 if not student_name.strip():
                     st.error("⚠️ Аты-жөніңізді енгізіңіз!")
                 else:
@@ -377,13 +479,19 @@ else:
                     if naming_case == "Tabys_2026.xlsx": c += 1
 
                     st.balloons()
-                    st.success(f"Конструктор нәтижесі, {student_name}: **{c} / 6** дұрыс 🧩")
+                    st.success(f"🎉 Конструктор нәтижесі, {student_name}: **{c} / 6** дұрыс 🧩")
                     st.session_state.results_db.append({
                         "name": student_name, "grade": student_grade, "topic": selected_topic,
                         "task_type": "Виртуалды конструктор (Файлдар)", "score": f"{c} / 6"
                     })
 
-    # --- ВЕКТОРЛЫҚ ГРАФИКА БӨЛІМІ ---
+    # --- 7. ПРАКТИКАЛЫҚ ЖҰМЫС (Файлдық жүйе ойын сілтемесі) ---
+    elif "7. Файлдық жүйе" in selected_topic:
+        st.markdown("#### 🎮 Практикалық тапсырма (Интерактивті ойын)")
+        st.info("Бұл сабақ сыртқы платформадағы ойын арқылы орындалады.")
+        st.link_button("Ойынды ашу 🚀", "https://aliyateacher80-design.github.io/game-6-klass/")
+
+    # --- 8. ВЕКТОРЛЫҚ ГРАФИКА КОНСТРУКТОРЫ ---
     elif "8. Векторлық графикалық редактор" in selected_topic:
         st.markdown("#### 🧩 Виртуалды конструктор: «Растрлық және векторлық графиканы ажырат»")
         with st.form("gfx_sort"):
@@ -392,7 +500,7 @@ else:
             g3 = st.radio("3. «Негізі математикалық формулалар мен геометриялық пішіндерге негізделген»", ["-- Таңдаңыз --", "Растрлық графика", "Векторлық графика"])
             g4 = st.radio("4. «Файл көлемі өте кішкентай, жеңіл болады (SVG, CorelDRAW)»", ["-- Таңдаңыз --", "Растрлық графика", "Векторлық графика"])
 
-            if st.form_submit_button("Графиканы ажыратуды тексеру"):
+            if st.form_submit_button("Графиканы ажыратуды тексеру 🚀"):
                 if not student_name.strip():
                     st.error("⚠️ Аты-жөніңізді енгізіңіз!")
                 else:
@@ -402,12 +510,13 @@ else:
                     if g3 == "Векторлық графика": sc += 1
                     if g4 == "Векторлық графика": sc += 1
                     st.balloons()
-                    st.success(f"Нәтижеңіз: **{sc} / 4** дұрыс 🎯")
+                    st.success(f"🎉 Нәтижеңіз: **{sc} / 4** дұрыс 🎯")
                     st.session_state.results_db.append({
                         "name": student_name, "grade": student_grade, "topic": selected_topic,
                         "task_type": "Конструктор (Графика)", "score": f"{sc} / 4"
                     })
 
+    # --- 9. ВЕКТОРЛЫҚ ГРАФИКА ТЕСТІ ---
     elif "9. Векторлық графикалық редактор" in selected_topic:
         st.markdown("#### 📝 Тест: «Растрлық және векторлық графика» (10 сұрақ)")
         with st.form("gfx_test"):
@@ -422,7 +531,7 @@ else:
             t9 = st.radio("9. Векторлық графикалық редакторға жататын программа:", ["А) Adobe Photoshop", "В) CorelDRAW немесе Adobe Illustrator", "С) Paint", "D) Microsoft Photos"])
             t10 = st.radio("10. Векторлық суреттердің файл көлемі әдетте қандай болады?", ["А) Өте үлкен", "В) Әлдеқайда кіші әрі жеңіл", "С) Бірдей", "D) Өзгереді"])
 
-            if st.form_submit_button("Тестті тексеру"):
+            if st.form_submit_button("Тестті тексеру 🚀"):
                 if not student_name.strip():
                     st.error("⚠️ Аты-жөніңізді енгізіңіз!")
                 else:
@@ -439,13 +548,14 @@ else:
                     if "Әлдеқайда кіші" in t10: sc += 1
 
                     st.balloons()
-                    st.success(f"Тест нәтижесі, {student_name}: **{sc} / 10** ұпай 🌟")
+                    st.success(f"🎉 Тест нәтижесі, {student_name}: **{sc} / 10** ұпай 🌟")
                     st.session_state.results_db.append({
                         "name": student_name, "grade": student_grade, "topic": selected_topic,
                         "task_type": "Тест (Графика)", "score": f"{sc} / 10"
                     })
 
-    elif "10. Векторлық кескіндерді құру" in selected_topic:
+    # --- 10. ВЕКТОРЛЫҚ ҚҰРАЛДАР СӘЙКЕСТЕНДІРУІ ---
+    elif "10. Векторлық кескіндерді құру" in selected_topic and "Практикалық" in selected_topic:
         st.markdown("#### 🔗 Сәйкестендіру тапсырмасы: «Векторлық редактор құралдары»")
         with st.form("tool_match"):
             u1 = st.selectbox("1. Pen tool (Қалам)", ["-- Таңдаңыз --", "В) Нүктелер мен иіл сызықтар (кривые Безье) арқылы күрделі пішіндер салу.", "А) Тіктөртбұрыш"])
@@ -454,7 +564,7 @@ else:
             u4 = st.selectbox("4. Text tool (Мәтін құралы)", ["-- Таңдаңыз --", "Г) Әр түрлі қаріптермен атаулар, тақырыптар енгізу.", "Д) Нобай"])
             u5 = st.selectbox("5. Contour / Контур", ["-- Таңдаңыз --", "Д) Векторлық объектінің сыртқы шекарасы немесе сызық нобайы.", "Г) Мәтін"])
 
-            if st.form_submit_button("Сәйкестікті тексеру"):
+            if st.form_submit_button("Сәйкестікті тексеру 🚀"):
                 if not student_name.strip():
                     st.error("⚠️ Аты-жөніңізді енгізіңіз!")
                 else:
@@ -465,14 +575,44 @@ else:
                     if "Г)" in u4: sc += 1
                     if "Д)" in u5: sc += 1
                     st.balloons()
-                    st.success(f"Нәтижеңіз: **{sc} / 5** дұрыс сәйкестік 🎯")
+                    st.success(f"🎉 Нәтижеңіз: **{sc} / 5** дұрыс сәйкестік 🎯")
                     st.session_state.results_db.append({
                         "name": student_name, "grade": student_grade, "topic": selected_topic,
                         "task_type": "Сәйкестендіру (Құралдар)", "score": f"{sc} / 5"
                     })
 
-    # --- БОС ТАҚЫРЫПТАР (2, 7, 11) ---
-    else:
-        st.info(
-            "📌 Бұл сабақ (практикалық жұмыс / бекіту) үшін тапсырмалар жүйеге енгізілмеді. Сыртқы сілтеме арқылы орындалады."
-        )
+    # --- 11. ҚАБАТТАР ҚҰПИЯСЫ (Layers Constructor) ---
+    elif "11. Векторлық кескіндерді құру" in selected_topic and "Бекіту" in selected_topic:
+        st.markdown("""
+            <div class="scenario-box">
+                <b>📜 Өмірлік жағдаят (Функционалдық сауаттылық кейсі):</b><br>
+                «Дизайнер Айдын «Эко-үй» макетін салып жатып, қабаттардың (Layers) ретін шатастырып алды. 
+                Нәтижесінде терезелер көрінбей қалды, ал қабырға шатырды жауып тастады. 
+                Векторлық редакторда сурет дұрыс шығуы үшін элементтерді <b>астыңғы қабаттан үстіңгі қабатқа қарай (1-ден 5-ке дейін)</b> дұрыс орналастырыңыз!»
+            </div>
+            """, unsafe_allow_html=True)
+
+        with st.form("layers_form"):
+            l1 = st.selectbox("1-қабат (Ең астыңғы негіз - Фон):", ["-- Қабатты таңдаңыз --", "Үйдің қабырғасы", "Фон (Аспан мен жер)", "Үйдің шатыры", "Есік пен терезе", "Алдыңғы пландағы ағаш"])
+            l2 = st.selectbox("2-қабат:", ["-- Қабатты таңдаңыз --", "Үйдің қабырғасы", "Фон (Аспан мен жер)", "Үйдің шатыры", "Есік пен терезе", "Алдыңғы пландағы ағаш"])
+            l3 = st.selectbox("3-қабат:", ["-- Қабатты таңдаңыз --", "Үйдің қабырғасы", "Фон (Аспан мен жер)", "Үйдің шатыры", "Есік пен терезе", "Алдыңғы пландағы ағаш"])
+            l4 = st.selectbox("4-қабат:", ["-- Қабатты таңдаңыз --", "Үйдің қабырғасы", "Фон (Аспан мен жер)", "Үйдің шатыры", "Есік пен терезе", "Алдыңғы пландағы ағаш"])
+            l5 = st.selectbox("5-қабат (Ең үстіңгі қабат):", ["-- Қабатты таңдаңыз --", "Үйдің қабырғасы", "Фон (Аспан мен жер)", "Үйдің шатыры", "Есік пен терезе", "Алдыңғы пландағы ағаш"])
+
+            if st.form_submit_button("Қабаттар ретін тексеру 🚀"):
+                if not student_name.strip():
+                    st.error("⚠️ Аты-жөніңізді енгізіңіз!")
+                else:
+                    score_l = 0
+                    if l1 == "Фон (Аспан мен жер)": score_l += 1
+                    if l2 == "Үйдің қабырғасы": score_l += 1
+                    if l3 == "Есік пен терезе": score_l += 1
+                    if l4 == "Үйдің шатыры": score_l += 1
+                    if l5 == "Алдыңғы пландағы ағаш": score_l += 1
+
+                    st.balloons()
+                    st.success(f"🎉 Тамаша, {student_name}! Сіз қабаттардың дұрыс реттілігін **{score_l} / 5** дәлдікпен анықтадыңыз! 🌟")
+                    st.session_state.results_db.append({
+                        "name": student_name, "grade": student_grade, "topic": selected_topic,
+                        "task_type": "Қабаттар конструкторы (Layers)", "score": f"{score_l} / 5"
+                    })
