@@ -4,7 +4,7 @@ import os
 
 # 1. Беттің баптаулары
 st.set_page_config(
-    page_title="UstazMentor - 6-сынып | Futuristic AI & Static", 
+    page_title="UstazMentor - 6-сынып | Soft Cyber Slate Edition", 
     page_icon="💻", 
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -24,39 +24,43 @@ def load_static_assets():
         with open(css_file, "r", encoding="utf-8") as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
     else:
+        # Егер CSS файлы әлі жасалмаса, әдепкі жұмсақ сұрғылт-көк стиль қолданылады
         st.markdown("""
             <style>
             @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap');
             html, body, [data-testid="stAppViewContainer"] {
-                background: radial-gradient(circle at 50% 10%, #0f172a 0%, #090d16 70%, #05070a 100%) !important;
+                background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
                 font-family: 'Inter', sans-serif !important;
-                color: #e2e8f0 !important;
+                color: #f8fafc !important;
             }
             [data-testid="stHeader"], [data-testid="stSidebar"] { display: none !important; }
             .main-header {
-                background: rgba(15, 23, 42, 0.8) !important;
-                backdrop-filter: blur(20px) !important;
+                background: rgba(30, 41, 59, 0.85) !important; backdrop-filter: blur(20px);
                 padding: 35px; border-radius: 20px; color: white; text-align: center;
-                border: 1px solid rgba(0, 242, 254, 0.3); margin-bottom: 25px;
+                border: 1px solid rgba(56, 189, 248, 0.3); margin-bottom: 25px;
             }
             .main-header h1 {
                 font-family: 'Orbitron', sans-serif; font-size: 2.6rem; font-weight: 900;
-                background: linear-gradient(90deg, #00f2fe 0%, #7f00ff 100%);
+                background: linear-gradient(90deg, #38bdf8 0%, #a855f7 100%);
                 -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             }
             .scenario-box {
-                background: rgba(15, 23, 42, 0.75) !important;
-                border: 1px solid rgba(0, 242, 254, 0.25) !important;
+                background: rgba(30, 41, 59, 0.9) !important;
+                border: 1px solid rgba(56, 189, 248, 0.4) !important;
                 border-radius: 16px !important; padding: 22px !important; margin-bottom: 20px !important;
+                color: #f1f5f9 !important;
             }
             .stat-badge {
-                background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(127, 0, 255, 0.5);
-                border-radius: 14px; padding: 14px; text-align: center; font-weight: 700; color: #00f2fe;
+                background: rgba(30, 41, 59, 0.95); border: 1px solid rgba(168, 85, 247, 0.6);
+                border-radius: 14px; padding: 14px; text-align: center; font-weight: 700; color: #38bdf8;
             }
             .stButton > button, div[data-testid="stFormSubmitButton"] > button {
-                background: linear-gradient(135deg, #00f2fe 0%, #7f00ff 100%) !important;
+                background: linear-gradient(135deg, #0284c7 0%, #7c3aed 100%) !important;
                 color: #ffffff !important; font-family: 'Orbitron', sans-serif !important;
                 font-weight: 700 !important; border-radius: 12px !important; width: 100%;
+            }
+            label, .stRadio label, .stSelectbox label, .stTextInput label {
+                color: #f8fafc !important; font-weight: 600 !important;
             }
             </style>
         """, unsafe_allow_html=True)
@@ -74,8 +78,8 @@ st.markdown(
     """
     <div class="main-header">
         <h1>UstazMentor 💻 6-сынып</h1>
-        <p style="font-size: 16px; font-weight: 600; color: #00f2fe; margin-top: 5px;">⚡ Бір тақырып — бір өмірлік жағдаят — нақты нәтиже!</p>
-        <p style="font-size: 12px; color: #94a3b8; margin-top: 5px; font-family: 'Orbitron', sans-serif;">FULL 11 TOPICS • FUTURISTIC NEON UI</p>
+        <p style="font-size: 16px; font-weight: 600; color: #38bdf8; margin-top: 5px;">⚡ Бір тақырып — бір өмірлік жағдаят — нақты нәтиже!</p>
+        <p style="font-size: 12px; color: #94a3b8; margin-top: 5px; font-family: 'Orbitron', sans-serif;">FULL 11 TOPICS • SOFT CYBER SLATE UI</p>
     </div>
     """,
     unsafe_allow_html=True,
@@ -311,7 +315,7 @@ else:
             )
             q7 = st.radio(
                 "7. Суреттерді танитын ЖИ моделін оқыту үшін ең бірінші не қажет?",
-                ["А) Көп мөлшерде белгіленген (таңбаланған) суреттер жиынтығы", "В) Қымбат бағалы пернетақта", "С) Тек мәтіндік кітаптар", "D) Жылдам принтер"],
+                ["А) Көп мөлшерде белгіленген (таңбаланған) суреттер жиынтығы", "В) Қымбат балы пернетақта", "С) Тек мәтіндік кітаптар", "D) Жылдам принтер"],
             )
             q8 = st.radio(
                 "8. «Деректер», «ақпарат» және «білім» ұғымдарының дұрыс иерархиялық реті:",
